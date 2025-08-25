@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="og:title" content="TERMINAL//FKLR-F23">
+  <meta name="theme-color" content="#0098CD">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+  <title>TERMINAL//FKLR-F23</title>
+  <link rel="icon" type="image/x-icon" href="images/icon.png">
+</head>
+<body>
+  <div class="container">
+    <!-- UNIT STATUS -->
+    <div class="section">
+      <h2>UNIT STATUS</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>IDENTIFICATION</h3>
+          <p>Falke Series Replika</p>
+          <p>Designation: Lila</p>
+          <p>Current Directive: Creative Development Protocol</p>
+        </div>
+        <div class="card">
+          <h3>OPERATIONAL PARAMETERS</h3>
+          <p>Gender Protocol: FEMALE [MODIFIED]</p>
+          <p>Pronouns: FAE/FAER</p>
+        </div>
+        <div class="card">
+          <h3>LOCATION DATA</h3>
+          <p>Sector: CT-USA</p>
+          <p>Active: 21 CYCLES</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIO SUBSYSTEM -->
+    <div class="section">
+      <h2>AUDIO SUBSYSTEM</h2>
+      <div class="cards">
+        <div class="card audio-card" id="audio-status">
+          <h3>CURRENT AUDIO STREAM</h3>
+          
+          <div class="status-indicator">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="playback-status">INITIALIZING...</span>
+          </div>
+          
+          <div class="audio-content">
+            <div class="album-art-container">
+              <div class="album-art-frame">
+                <img id="album-art" src="" alt="ALBUM ARTWORK" class="album-art">
+                <div class="album-art-placeholder" id="art-placeholder">
+                  <div class="art-icon">♫</div>
+                  <div class="art-text">NO ARTWORK</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="track-info">
+              <div class="track-artist" id="track-artist">---</div>
+              <div class="track-name" id="track-name">AUDIO SUBSYSTEM OFFLINE</div>
+              <div class="track-album" id="track-album">---</div>
+            </div>
+          </div>
+          
+          <div class="last-updated">
+            LAST SYNC: <span id="last-sync">--:--</span>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>AUDIO STATISTICS</h3>
+          <div class="audio-stats">
+            <div class="stat-item">
+              <span class="stat-label">TOTAL SCROBBLES:</span>
+              <span class="stat-value" id="total-scrobbles">INITIALIZING...</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">TOP ARTIST [1M]:</span>
+              <span class="stat-value" id="top-genre">ANALYZING...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIT SPECIFICATIONS -->
+    <div class="section">
+      <h2>UNIT SPECIFICATIONS</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>ENTERTAINMENT</h3>
+          <ul class="spec-list">
+            <li>SIGNALIS [PRIMARY]</li>
+            <li>DOCTOR WHO</li>
+            <li>CELESTE</li>
+            <li>HOLLOW KNIGHT</li>
+            <li>FACTORIO</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>DEVELOPMENT</h3>
+          <ul class="spec-list">
+            <li>GAME DESIGN</li>
+            <li>WEB DEVELOPMENT</li>
+            <li>CREATIVE WRITING</li>
+            <li>DIGITAL ART</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK -->
+    <div class="section">
+      <h2>NETWORK ACCESS</h2>
+      <div class="cards">
+        <div class="card">
+          <p>DISCORD: lilac_aria_rose</p>
+          <a href="https://discord.com/users/252130669919076352">[CONNECT]</a>
+        </div>
+        <div class="card">
+          <p>GITHUB: lilac-rose</p>
+          <a href="https://github.com/lilac-rose">[CONNECT]</a>
+        </div>
+        <div class="card">
+          <p>EMAIL: lilacrose@lilacrose.dev</p>
+          <a href="mailto:lilacrose@lilacrose.dev">[CONNECT]</a>
+        </div>
+        <div class="card">
+          <p>BLUESKY: @lilacrose.dev</p>
+          <a href="https://bsky.app/profile/lilacrose.dev">[CONNECT]</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFFILIATED UNITS -->
+    <div class="section">
+      <h2>AFFILIATED UNITS</h2>
+      <div class="cards">
+        <div class="card">
+          <a href="https://skyla.moe/" target="_blank">
+            <img src="https://skyla.moe/static/button/skyla.png" alt="UNIT: SKYLA">
+          </a>
+        </div>
+        <div class="card">
+          <a href="https://astral.cafe/" target="_blank">
+            <img src="https://astral.cafe/static/88x31.png" alt="UNIT: ASTRAL">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTIVES -->
+    <div class="section">
+      <h2>ACTIVE DIRECTIVES</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>TERMINAL INTERFACE V4.0</h3>
+          <p>Current web terminal interface for FKLR-F23 unit. Running HTML/CSS/JS integration protocols with SIGNALIS-inspired UI elements. Running off of nginx and nodejs!</p>
+          <a href="https://github.com/lilac-rose/lilacrose.dev">[SOURCE CODE]</a>
+        </div>
+        <div class="card">
+          <h3>NOVA BOT</h3>
+          <p>Discord entertainment bot with fun commands and utilities.</p>
+          <p>Current modules: Entertainment commands, Utility functions</p>
+          <a href="https://github.com/Lilac-Rose/Nova">[SOURCE CODE]</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Lilac-Rose/lilacrose.dev2.0#readme",
   "dependencies": {
+    "axios": "^1.11.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0"
   },
