@@ -199,7 +199,7 @@ class AudioSubsystem {
       minute: '2-digit' 
     });
     this.lastSync.textContent = timeString;
-    this.lastUpdateTime = now;
+    this.lastUpdateTime = now; // Store as Date object for comparison
   }
   
   destroy() {
@@ -249,8 +249,18 @@ document.addEventListener('visibilitychange', () => {
       console.log('TERMINAL ENTERING STANDBY MODE');
     } else {
       console.log('TERMINAL RESUMING OPERATION');
-      // Immediate update when tab becomes visible
-      window.audioSubsystem.updateLastFM();
+      
+      // Only update if it's been more than 2 minutes since last update
+      const now = new Date();
+      const timeSinceUpdate = window.audioSubsystem.lastUpdateTime ? 
+        (now - window.audioSubsystem.lastUpdateTime) : Infinity;
+      
+      if (timeSinceUpdate > 2 * 60 * 1000) { // 2 minutes
+        console.log('REFRESHING AUDIO DATA - STALE DATA DETECTED');
+        window.audioSubsystem.updateLastFM();
+      } else {
+        console.log('AUDIO DATA STILL FRESH - NO UPDATE NEEDED');
+      }
     }
   }
 });
