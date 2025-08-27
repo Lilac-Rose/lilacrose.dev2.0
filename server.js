@@ -22,30 +22,49 @@ app.use((req, res, next) => {
   next();
 });
 
+// Retry wrapper for axios calls
+async function fetchWithRetry(url, options, retries = 2, delay = 500) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await axios.get(url, options);
+    } catch (err) {
+      if (i === retries) throw err;
+      log(`Retrying ${url} after failure: ${err.message}`, 'WARN');
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+}
+
 // API endpoint to fetch Last.fm information
 app.get("/api/lastfm", async (req, res) => {
   const username = process.env.LASTFM_USERNAME;
   const apiKey = process.env.LASTFM_API_KEY;
-  
+
   log('Audio subsystem query initiated', 'AUDIO');
-  
+
   // Validate environment variables
   if (!username || !apiKey) {
     const errorMsg = 'Last.fm credentials not configured';
     log(errorMsg, 'ERROR');
-    return res.status(500).json({ 
+    return res.json({
+      artist: 'ERROR',
+      name: 'SYSTEM OFFLINE',
+      album: 'CONFIG ERROR',
+      albumArt: '',
+      nowPlaying: false,
+      totalScrobbles: '---',
+      topArtist: 'UNKNOWN',
       error: 'AUDIO_SUBSYSTEM_CONFIG_ERROR',
       message: errorMsg
     });
   }
-  
+
   try {
     log(`Requesting audio data for unit: ${username}`, 'AUDIO');
-    
-    // Make multiple API calls concurrently for efficiency
-    const [recentTracksRes, userInfoRes, topArtistsRes] = await Promise.all([
-      // Recent tracks
-      axios.get('https://ws.audioscrobbler.com/2.0/', {
+
+    // Prepare requests
+    const requests = [
+      fetchWithRetry('https://ws.audioscrobbler.com/2.0/', {
         params: {
           method: "user.getrecenttracks",
           user: username,
@@ -55,8 +74,7 @@ app.get("/api/lastfm", async (req, res) => {
         },
         timeout: 10000
       }),
-      // User info for total scrobbles
-      axios.get('https://ws.audioscrobbler.com/2.0/', {
+      fetchWithRetry('https://ws.audioscrobbler.com/2.0/', {
         params: {
           method: "user.getinfo",
           user: username,
@@ -65,8 +83,7 @@ app.get("/api/lastfm", async (req, res) => {
         },
         timeout: 10000
       }),
-      // Top artists for genre approximation
-      axios.get('https://ws.audioscrobbler.com/2.0/', {
+      fetchWithRetry('https://ws.audioscrobbler.com/2.0/', {
         params: {
           method: "user.gettopartists",
           user: username,
@@ -77,96 +94,84 @@ app.get("/api/lastfm", async (req, res) => {
         },
         timeout: 10000
       })
-    ]);
-    
+    ];
+
+    // Run all requests safely
+    const [recentTracksRes, userInfoRes, topArtistsRes] = await Promise.allSettled(requests);
+
     // Process recent tracks
-    if (!recentTracksRes.data || !recentTracksRes.data.recenttracks) {
-      throw new Error('Invalid recent tracks response from Last.fm API');
-    }
-    
-    const recentTracks = recentTracksRes.data.recenttracks.track;
-    
-    // Handle case where no tracks are found
-    if (!recentTracks || (Array.isArray(recentTracks) && recentTracks.length === 0)) {
-      log('No recent tracks found for user', 'AUDIO');
-      return res.json({
-        artist: 'NO DATA',
-        name: 'NO RECENT TRANSMISSIONS',
-        album: 'EMPTY ARCHIVE',
-        albumArt: '',
-        nowPlaying: false,
-        totalScrobbles: 0,
-        topArtist: 'UNKNOWN'
-      });
-    }
-    
-    // Get the most recent track
-    const track = Array.isArray(recentTracks) ? recentTracks[0] : recentTracks;
-    const isNowPlaying = track['@attr']?.nowplaying === 'true';
-    
-    // Get album artwork
+    let track = null;
+    let isNowPlaying = false;
     let albumArt = '';
-    if (track.image && Array.isArray(track.image)) {
-      const artworkSizes = ['extralarge', 'large', 'medium', 'small'];
-      for (const size of artworkSizes) {
-        const artwork = track.image.find(img => img.size === size);
-        if (artwork && artwork['#text'] && artwork['#text'].trim()) {
-          albumArt = artwork['#text'];
-          break;
+    if (recentTracksRes.status === 'fulfilled') {
+      const recentTracks = recentTracksRes.value.data?.recenttracks?.track;
+      if (recentTracks && (Array.isArray(recentTracks) ? recentTracks.length > 0 : true)) {
+        track = Array.isArray(recentTracks) ? recentTracks[0] : recentTracks;
+        isNowPlaying = track['@attr']?.nowplaying === 'true';
+
+        if (track.image && Array.isArray(track.image)) {
+          const artworkSizes = ['extralarge', 'large', 'medium', 'small'];
+          for (const size of artworkSizes) {
+            const artwork = track.image.find(img => img.size === size);
+            if (artwork && artwork['#text'] && artwork['#text'].trim()) {
+              albumArt = artwork['#text'];
+              break;
+            }
+          }
         }
+      } else {
+        log('No recent tracks found for user', 'AUDIO');
       }
+    } else {
+      log(`Recent tracks request failed: ${recentTracksRes.reason?.message}`, 'WARN');
     }
-    
-    // Process user info for total scrobbles
-    const userInfo = userInfoRes.data?.user;
-    const totalScrobbles = userInfo?.playcount ? parseInt(userInfo.playcount).toLocaleString() : '0';
-    
+
+    // Process user info
+    let totalScrobbles = '---';
+    if (userInfoRes.status === 'fulfilled') {
+      const playcount = userInfoRes.value.data?.user?.playcount;
+      totalScrobbles = playcount ? parseInt(playcount).toLocaleString() : '0';
+    } else {
+      log(`User info request failed: ${userInfoRes.reason?.message}`, 'WARN');
+    }
+
     // Process top artist
-    const topArtists = topArtistsRes.data?.topartists?.artist;
-    let topArtist = 'ANALYZING...';
-    if (topArtists && topArtists.length > 0) {
-      const artist = Array.isArray(topArtists) ? topArtists[0] : topArtists;
-      topArtist = artist.name || 'UNKNOWN';
+    let topArtist = 'UNKNOWN';
+    if (topArtistsRes.status === 'fulfilled') {
+      const artists = topArtistsRes.value.data?.topartists?.artist;
+      if (artists && artists.length > 0) {
+        topArtist = artists[0].name || 'UNKNOWN';
+      }
+    } else {
+      log(`Top artists request failed: ${topArtistsRes.reason?.message}`, 'WARN');
     }
-    
+
     const trackData = {
-      artist: track.artist?.['#text'] || track.artist?.name || 'UNKNOWN ARTIST',
-      name: track.name || 'UNKNOWN TRACK',
-      album: track.album?.['#text'] || 'UNKNOWN ALBUM',
-      albumArt: albumArt,
+      artist: track?.artist?.['#text'] || track?.artist?.name || 'UNKNOWN ARTIST',
+      name: track?.name || 'UNKNOWN TRACK',
+      album: track?.album?.['#text'] || 'UNKNOWN ALBUM',
+      albumArt,
       nowPlaying: isNowPlaying,
-      totalScrobbles: totalScrobbles,
-      topArtist: topArtist
+      totalScrobbles,
+      topArtist
     };
-    
+
     log(`Audio data retrieved: ${trackData.artist} - ${trackData.name} [${isNowPlaying ? 'STREAMING' : 'ARCHIVED'}]${albumArt ? ' [ARTWORK]' : ''} | ${totalScrobbles} scrobbles`, 'AUDIO');
-    
+
     res.json(trackData);
-    
+
   } catch (error) {
-    let errorMessage = 'Failed to fetch audio data';
-    let errorCode = 'AUDIO_SUBSYSTEM_ERROR';
-    
-    if (error.code === 'ENOTFOUND') {
-      errorMessage = 'Network connection failed';
-      errorCode = 'NETWORK_ERROR';
-    } else if (error.response?.status === 403) {
-      errorMessage = 'Authentication failed';
-      errorCode = 'AUTH_ERROR';
-    } else if (error.response?.status === 404) {
-      errorMessage = 'User not found';
-      errorCode = 'USER_NOT_FOUND';
-    } else if (error.code === 'ECONNABORTED') {
-      errorMessage = 'Request timeout';
-      errorCode = 'TIMEOUT_ERROR';
-    }
-    
-    log(`${errorMessage}: ${error.message}`, 'ERROR');
-    
-    res.status(500).json({ 
-      error: errorCode,
-      message: errorMessage,
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    log(`Critical audio subsystem failure: ${error.message}`, 'CRITICAL');
+    res.json({
+      artist: 'ERROR',
+      name: 'SYSTEM OFFLINE',
+      album: 'FAILED TO FETCH DATA',
+      albumArt: '',
+      nowPlaying: false,
+      totalScrobbles: '---',
+      topArtist: 'UNKNOWN',
+      error: 'AUDIO_SUBSYSTEM_ERROR',
+      message: 'Failed to fetch audio data'
     });
   }
 });
@@ -203,7 +208,7 @@ app.use((req, res) => {
 // Error handler
 app.use((error, req, res, next) => {
   log(`Unhandled error: ${error.message}`, 'CRITICAL');
-  res.status(500).json({
+  res.json({
     error: 'SYSTEM_ERROR',
     message: 'Critical system error occurred'
   });
