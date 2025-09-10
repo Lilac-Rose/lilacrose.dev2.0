@@ -1,0 +1,147 @@
+:root {
+  --main-bg: #0a0a14;
+  --card-bg: rgba(15, 15, 31, 0.6);
+  --text-color: #f0e6ff;
+  --accent: #0098CD;
+  --accent-transparent: rgba(0, 152, 205, 0.2);
+  --error-color: #ff4757;
+  --success-color: #2ed573;
+  --warning-color: #ffa502;
+  --card-radius: 6px;
+  --gap: 20px;
+  --thin-border: 1px solid var(--accent-transparent);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--main-bg);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Navbar */
+header.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  padding: 15px 30px;
+  border-bottom: var(--thin-border);
+}
+
+header.navbar h1 {
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+header.navbar nav a {
+  color: var(--text-color);
+  margin-left: 15px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+header.navbar nav a:hover {
+  color: var(--accent);
+}
+
+/* Main content */
+main {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: var(--gap);
+}
+
+.intro h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+
+.projects {
+  display: grid;
+  gap: var(--gap);
+}
+
+/* Project cards */
+.card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--card-radius);
+  border: var(--thin-border);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+
+.card p {
+  margin-bottom: 10px;
+}
+
+/* Images inside cards */
+.images {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.images img {
+  width: 48%;
+  border-radius: var(--card-radius);
+  border: var(--thin-border);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+  border-top: var(--thin-border);
+  background: var(--card-bg);
+}
+
+footer p {
+  margin-bottom: 8px;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+
+.contact-links a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-links a:hover {
+  text-decoration: underline;
+}
+
+.contact-links span {
+  color: var(--text-color);
+}
