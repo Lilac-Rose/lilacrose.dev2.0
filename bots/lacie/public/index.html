@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacie Dashboard</title>
+    <link rel="stylesheet" href="/lacie/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="loading" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Loading dashboard...</p>
+    </div>
+
+    <div id="app" style="display: none;">
+        <div class="container">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Lacie</h2>
+                    <p class="subtitle">Dashboard</p>
+                </div>
+                <div class="sidebar-nav">
+                    <button class="nav-item active" data-page="stats">
+                        <span class="nav-icon">📊</span>
+                        Statistics
+                    </button>
+                    <button class="nav-item" data-page="xp">
+                        <span class="nav-icon">⭐</span>
+                        XP System
+                    </button>
+                </div>
+                <div class="sidebar-footer">
+                    <div class="user-info-sidebar">
+                        <div id="sidebarUserAvatar"></div>
+                        <div class="user-details">
+                            <span id="sidebarUserName">User</span>
+                            <a href="/lacie/logout" class="logout-btn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Stats Page (Landing Page) -->
+                <div id="statsPage" class="page active">
+                    <!-- Header -->
+                    <header class="header">
+                        <div class="user-info">
+                            <div id="userAvatar"></div>
+                            <div>
+                                <h1 id="userName">Welcome!</h1>
+                                <p class="subtitle">Server Statistics Dashboard</p>
+                            </div>
+                        </div>
+                        <div class="header-stats">
+                            <div class="stat-item">
+                                <span>Total Members:</span>
+                                <strong id="totalMembers">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Text Channels:</span>
+                                <strong id="textChannels">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Voice Channels:</span>
+                                <strong id="voiceChannels">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Server Boosts:</span>
+                                <strong id="serverBoosts">0</strong>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Stats Dashboard -->
+                    <div class="dashboard-grid stats-grid">
+                        <!-- Server Stats -->
+                        <div class="card">
+                            <h2>🌐 Server Overview</h2>
+                            <div class="stats-grid-inner">
+                                <div class="stat-card">
+                                    <div class="stat-icon">👥</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="memberCount">0</div>
+                                        <div class="stat-label">Total Members</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📅</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="createdDate">Loading...</div>
+                                        <div class="stat-label">Created On</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">💬</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="totalTextChannels">0</div>
+                                        <div class="stat-label">Text Channels</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🔊</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="totalVoiceChannels">0</div>
+                                        <div class="stat-label">Voice Channels</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📂</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="totalCategories">0</div>
+                                        <div class="stat-label">Categories</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🚀</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="boostLevel">0</div>
+                                        <div class="stat-label">Boost Level</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">✨</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="boostCount">0</div>
+                                        <div class="stat-label">Boosts</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bot Stats -->
+                        <div class="card">
+                            <h2>🤖 Bot Statistics</h2>
+                            <div class="stats-grid-inner">
+                                <div class="stat-card">
+                                    <div class="stat-icon">⚡</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="botUptime">0h 0m 0s</div>
+                                        <div class="stat-label">Uptime</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📊</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="totalCommands">0</div>
+                                        <div class="stat-label">Commands Used</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🌍</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="serverCount">0</div>
+                                        <div class="stat-label">Servers</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">👤</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="botUsers">0</div>
+                                        <div class="stat-label">Bot Users</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="developer-info">
+                                <strong>Developer:</strong> Lilac Aria Rose
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- XP System Page -->
+                <div id="xpPage" class="page">
+                    <!-- Header -->
+                    <header class="header">
+                        <div class="user-info">
+                            <div id="xpUserAvatar"></div>
+                            <div>
+                                <h1 id="xpUserName">Welcome!</h1>
+                                <p class="subtitle">Lacie XP System Dashboard</p>
+                            </div>
+                        </div>
+
+                        <div class="header-stats">
+                            <div class="stat-item">
+                                <span>Total Roles:</span>
+                                <strong id="totalRoles">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Multiplier Roles:</span>
+                                <strong id="multiplierRoles">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Top Lifetime XP:</span>
+                                <strong id="topLifetimeXP">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Top Annual XP:</span>
+                                <strong id="topAnnualXP">0</strong>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Left Column: Leaderboards -->
+                        <div class="left-column">
+                            <!-- Combined Leaderboard -->
+                            <div class="card">
+                                <h2>🏆 Leaderboard</h2>
+                                
+                                <!-- Leaderboard Tabs -->
+                                <div class="leaderboard-tabs">
+                                    <button class="leaderboard-tab active" data-type="lifetime">Lifetime</button>
+                                    <button class="leaderboard-tab" data-type="annual">Annual</button>
+                                </div>
+                                
+                                <!-- Leaderboard Content -->
+                                <div id="leaderboardContent">
+                                    <div id="lifetimeLeaderboard" class="leaderboard"></div>
+                                    <div id="annualLeaderboard" class="leaderboard" style="display: none;"></div>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <div class="pagination">
+                                    <button id="prevPage" class="btn btn-secondary" disabled>Previous</button>
+                                    <span id="pageInfo" class="page-info">Page 1</span>
+                                    <button id="nextPage" class="btn btn-secondary">Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Configuration -->
+                        <div class="right-column">
+                            <div class="card">
+                                <h2>⚙️ XP System Configuration</h2>
+                                
+                                <!-- Display Mode -->
+                                <div id="displayMode">
+                                    <!-- Cooldown -->
+                                    <div class="form-section">
+                                        <label class="form-label">
+                                            <span class="label-icon">⏱️</span>
+                                            XP Cooldown (seconds)
+                                        </label>
+                                        <div class="config-value" id="cooldownDisplay"></div>
+                                        <p class="form-help">Time between XP gains per user</p>
+                                    </div>
+
+                                    <!-- Role Rewards -->
+                                    <div class="form-section">
+                                        <label class="form-label">
+                                            <span class="label-icon">🎖️</span>
+                                            Role Rewards
+                                        </label>
+                                        <div id="roleRewardsList" class="role-rewards-list"></div>
+                                    </div>
+
+                                    <!-- Multipliers -->
+                                    <div class="form-section">
+                                        <label class="form-label">
+                                            <span class="label-icon">✨</span>
+                                            XP Multipliers
+                                        </label>
+                                        <div id="multipliersList" class="multipliers-list"></div>
+                                    </div>
+
+                                    <!-- XP Curve -->
+                                    <div class="form-section">
+                                        <label class="form-label">
+                                            <span class="label-icon">📈</span>
+                                            XP Curve Formula
+                                        </label>
+                                        <div id="xpCurveDisplay" class="config-value-small"></div>
+                                        <p class="form-help">Formula: (level³ × base) + (level² × square) + (level × linear) ÷ divisor, rounded down to nearest 100</p>
+                                    </div>
+
+                                    <!-- Random XP -->
+                                    <div class="form-section">
+                                        <label class="form-label">
+                                            <span class="label-icon">🎲</span>
+                                            Random XP Range
+                                        </label>
+                                        <div id="randomXpDisplay" class="config-value-small"></div>
+                                        <p class="form-help">XP gained per message (random between min and max)</p>
+                                    </div>
+
+                                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                        <button onclick="showEditMode()" class="btn btn-primary">✏️ Edit Configuration</button>
+                                        <button id="refreshCacheBtn" onclick="refreshCache()" class="btn btn-secondary" style="display: none;">🔄 Refresh User Cache</button>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Mode -->
+                                <div id="editMode" style="display: none;">
+                                    <form onsubmit="saveConfig(event)" class="config-editor">
+                                        <!-- Cooldown Section -->
+                                        <div class="editor-section">
+                                            <h3>⏱️ Cooldown Settings</h3>
+                                            <div class="form-section">
+                                                <label class="form-label">Cooldown Duration (seconds)</label>
+                                                <input type="number" id="cooldownInput" class="form-input" required min="1" max="3600" value="60">
+                                                <p class="form-help">Time users must wait between XP gains</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Role Rewards Section -->
+                                        <div class="editor-section">
+                                            <h3>🎖️ Role Rewards</h3>
+                                            <p class="form-help">Assign roles to users when they reach specific levels</p>
+                                            <div id="roleRewardsEditor" class="role-rewards-editor">
+                                                <!-- Role rewards will be dynamically added here -->
+                                            </div>
+                                            <button type="button" onclick="addRoleReward()" class="add-entry-btn">
+                                                + Add Level Reward
+                                            </button>
+                                        </div>
+
+                                        <!-- Multipliers Section -->
+                                        <div class="editor-section">
+                                            <h3>✨ XP Multipliers</h3>
+                                            <p class="form-help">Assign XP multipliers to specific roles</p>
+                                            <div id="multipliersEditor" class="multipliers-editor">
+                                                <!-- Multipliers will be dynamically added here -->
+                                            </div>
+                                            <button type="button" onclick="addMultiplier()" class="add-entry-btn">
+                                                + Add Role Multiplier
+                                            </button>
+                                        </div>
+
+                                        <!-- XP Curve Section -->
+                                        <div class="editor-section">
+                                            <h3>📈 XP Curve Settings</h3>
+                                            <p class="form-help">Adjust how much XP is needed for each level</p>
+                                            <div class="xp-curve-editor">
+                                                <div class="curve-input">
+                                                    <label>Base Multiplier</label>
+                                                    <input type="number" id="curveBase" class="form-input" min="0.1" max="10" step="0.1" value="1">
+                                                </div>
+                                                <div class="curve-input">
+                                                    <label>Square Factor</label>
+                                                    <input type="number" id="curveSquare" class="form-input" min="0" max="1000" value="50">
+                                                </div>
+                                                <div class="curve-input">
+                                                    <label>Linear Factor</label>
+                                                    <input type="number" id="curveLinear" class="form-input" min="0" max="1000" value="100">
+                                                </div>
+                                                <div class="curve-input">
+                                                    <label>Divisor</label>
+                                                    <input type="number" id="curveDivisor" class="form-input" min="1" max="1000" value="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Random XP Section -->
+                                        <div class="editor-section">
+                                            <h3>🎲 Random XP Range</h3>
+                                            <p class="form-help">Set the XP range users get per message</p>
+                                            <div class="random-xp-editor">
+                                                <div class="form-section">
+                                                    <label class="form-label">Minimum XP</label>
+                                                    <input type="number" id="randomXpMin" class="form-input" min="1" max="1000" value="50">
+                                                </div>
+                                                <div class="form-section">
+                                                    <label class="form-label">Maximum XP</label>
+                                                    <input type="number" id="randomXpMax" class="form-input" min="1" max="1000" value="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                            <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Save Configuration</button>
+                                            <button type="button" onclick="cancelEdit()" class="btn btn-secondary">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/lacie/dashboard.js"></script>
+</body>
+</html>
